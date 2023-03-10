@@ -32,4 +32,6 @@ int		ft_strlen(char *s);
 int		word_len(char *s, char c);
 int		ft_strlcpy(char *dst, char *src, int dstsize);
 char	**get_path(char **ev);
+char    **get_cmd_paths(char **args, char *cmd);
+char	*ft_strdup(char *s1);
 #endif

@@ -142,11 +142,8 @@ char	**ft_split3(char *s, char c)
 {
 	char	**str;
 	int		i[2];
-	char	*line;
 	int		r;
-	char	*ss;
 	r = 0;
-	line = NULL;
 	if (!s)
 		return (0);
 	str = malloc(sizeof(char *) * (count(s, c) + 1));
@@ -161,11 +158,8 @@ char	**ft_split3(char *s, char c)
 		if (s[i[0]] == '\'' || s[i[0]] == '"')
 		{
 			r = 1;
-			ss = &s[i[0]];
 			str[i[1]++] = joined_arg(&s[i[0]]);	
 			i[0] += last_index(&s[i[0]]) + 1;
-			//printf("%c",s[i[0]]);
-			//exit(0);
 			if (!s[i[0]])
 				break;
 		}

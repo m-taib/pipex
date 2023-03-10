@@ -68,6 +68,58 @@ char	**get_path(char **ev)
 	}
 	return (0);
 }
+
+char	*ft_strchr(char *str, char c)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == c)
+			return (str + i);
+		i++;
+	}
+	return (0);
+
+}
+
+char 	**get_cmd_paths(char **args, char *cmd)
+{
+	int	i;
+	char	**paths;
+
+	i = 0;
+	while (args[i])
+		i++;
+	paths = malloc(sizeof(char *) * ++i);
+	if (!paths)
+		return (0);
+	i = 0;
+	paths[i] = ft_strjoin(ft_strdup(ft_strchr(args[i], '/')), cmd);
+	++i;
+	while (args[i])
+	{
+		paths[i] = ft_strjoin(args[i], cmd);
+		i++;
+	}
+	paths[i] = NULL;
+	return (paths);
+}
+
+char	*path(char **args)
+{
+	int	i;
+
+	i = 0;
+	while (args[i])
+	{
+		if (!access(args[i], F_OK | X_OK))
+			return (args[i]);
+		i++;
+	}
+	return (0);
+}
 int	ft_strlen(char *s)
 {
 	int	i;

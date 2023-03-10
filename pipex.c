@@ -17,11 +17,9 @@ int		main(int ac, char **av, char **ev)
 	char	**args;
 	int		i;
 	i = 0;
-	(void)ac;
-	//if (ac != 5)
-	//	return (1);
+	if (ac != 5)
+		return (1);
 	args = NULL;
-	args = get_path(ev);
 	/*if (args[i])
 	{
 		while (args[i])
@@ -34,6 +32,9 @@ int		main(int ac, char **av, char **ev)
 	free_array(args);*/
 	//exit(0);
 	//printf("%s\n",av[2]);
+	char *cmd;
+	printf("%d",count(av[2], ' ' ));
+	exit(0);
 	args = ft_split3((av[2]), ' ');
 	if (args[i])
 	{
@@ -43,6 +44,16 @@ int		main(int ac, char **av, char **ev)
 			i++;
 		}
 	}
-	//i[0] += ft_strlen(str[i[1]++]);
+	exit(0);
+	cmd = ft_strjoin(ft_strdup("/"), args[0]);
+	args = get_path(ev);
+	i = 0;
+	args = get_cmd_paths(args, cmd);
+	while (args[i])
+	{
+		printf("%s\n",args[i]);
+		i++;
+	}
+	i = 0;
 	return (0);
 }
