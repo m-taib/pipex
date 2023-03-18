@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:15:34 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/06 15:06:00 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/03/15 13:20:57 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,14 @@ int		ft_strlcpy(char *dst, char *src, int dstsize);
 char	**get_path(char **ev);
 char    **get_cmd_paths(char **args, char *cmd);
 char	*ft_strdup(char *s1);
+char	*ft_substr(char *s, int start, int len);
+char	*path(char **args);
+typedef struct s_list 
+{
+	char	*content;
+	struct s_list *next;
+} t_list;
+t_list	*get_commands(char	*str);
+t_list	*ft_lstnew(char *content);
+void	ft_lstadd_back(t_list **head, char *str);
 #endif

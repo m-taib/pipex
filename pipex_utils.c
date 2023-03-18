@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:22:30 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/06 14:45:44 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/03/16 10:37:25 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,11 @@ char	**get_path(char **ev)
 {
 	int		i;
 	char	**path;
+	char	*str;
 
+	str = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin: \
+			/usr/local/munki: \
+			/Library/Frameworks/Mono.framework/Versions/Current/Commands";
 	i = 0;
 	while (ev[i])
 	{
@@ -66,7 +70,8 @@ char	**get_path(char **ev)
 		}
 		i++;
 	}
-	return (0);
+	path = ft_split2(str, ':');
+	return (path);
 }
 
 char	*ft_strchr(char *str, char c)

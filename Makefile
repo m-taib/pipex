@@ -6,11 +6,11 @@
 #    By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/25 08:50:48 by mtaib             #+#    #+#              #
-#    Updated: 2023/03/06 15:02:39 by mtaib            ###   ########.fr        #
+#    Updated: 2023/03/14 15:51:55 by mtaib            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRC = pipex.c pipex_utils.c ft_split.c ft_split2.c ft_strlcpy.c ft_substr.c
+SRC = pipex.c pipex_utils.c ft_split.c ft_split2.c ft_strlcpy.c pipex_utils2.c
 
 OSRC = $(SRC:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:23:52 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/06 16:27:03 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/03/14 17:40:13 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,49 +94,6 @@ char	*ft_strdup(char *s1)
 	ptr[i] = '\0';
 	return (ptr);
 }
-
-int		last_index(char *s)
-{
-	int		i;
-
-	i = ft_strlen(s) - 1;
-	while (i >= 0)
-	{
-		if (s[i] == '\'' || s[i] == '"')
-			return (i);
-		i--;
-	}
-	return (-1);
-}
-
-char	*joined_arg(char *s)
-{
-	int		i;
-	char	*arg;
-	char 	c;
-	char	*line;
-	char	*s2;
-
-	s2 = malloc(2);
-	s2[1] = '\0';
-	line = NULL;
-	i = last_index(s);
-	arg = ft_substr(s, 0, i+1);
-	i = 0;
-	while (arg[i])
-	{
-		if (arg[i] == '\'' || arg[i] == '"')
-			c = arg[i++];
-		while (arg[i] && arg[i] != c)
-		{
-			s2[0] = arg[i];
-			line = ft_strjoin(line, s2);
-			i++;
-		}
-		i++;
-	}
-	return (line);
-}	
 
 char	**ft_split3(char *s, char c)
 {
