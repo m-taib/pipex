@@ -6,22 +6,23 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:14:46 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/18 13:06:15 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/03/18 23:10:17 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	execute_command(char *cmd_path, t_list *args, char **env)
+void	execute_command(char *cmd_path, t_list *args, char **env, int i, int ac, int fdd, int infd, int *fd)
 {
 	char	*str;
 	t_list 	*tmp;
 	char	**cmds;
-	int		fd[2];
 	int		pid;
-
+	(void)ac;
 	tmp = args;
 	str = NULL;
+	pid = 1;
+	(void)fdd;	
 	while (args)
 	{
 		str = ft_strjoin(str ,args->content);
@@ -30,14 +31,29 @@ void	execute_command(char *cmd_path, t_list *args, char **env)
 		args = args->next;
 	}
 	cmds = ft_split2(str, ' ');
-	pipe(fd);
 	pid = fork();
-	if (pid = 0)
+	if (pid == 0)
 	{
-		dup2(fd[0] , 0);
-		dup2(fd[1] , 1);
-		close(fd[0]);
-		close(fd[1]);
+		if (i == 2)
+		{
+			dup2(fd[1], 1);
+			close(fd[1]);
+			close(fd[0]);
+			dup2(infd , 0);
+			close(infd);
+		}
+		else 
+		{
+			dup2(fd[0] , 0);
+			if (i == ac - 2)
+			{
+				dup2(fdd , 1);
+			}
+			else
+				dup2(fd[1] , 1);
+			close(fd[0]);
+			close(fd[1]);
+		}
 		execve(cmd_path, cmds, env);
 	}
 }
@@ -49,15 +65,25 @@ int		main(int ac, char **av, char **ev)
 	(void)ev;
 	t_list *head;
 	char	*cmd;
-	i = 0;
+	int		fd;
+	int		fd1;
+	int		arr[2];
+	fd1 = open("file1",O_RDWR);	
+	fd = open("file2",O_RDWR | O_TRUNC);
+	i = 2;
 	if (ac < 5)
 		return (1);
 	args = NULL;
-	head = get_commands(av[2]);
-	cmd = ft_strjoin(ft_strdup("/"), head->content);
-	args = get_path(ev);
-	args = get_cmd_paths(args, cmd);
-	cmd = path(args);
-	execute_command(cmd, head, ev);
+	pipe(arr);
+	while (i < ac - 1)
+	{
+		head = get_commands(av[i]);
+		cmd = ft_strjoin(ft_strdup("/"), head->content);
+		args = get_path(ev);
+		args = get_cmd_paths(args, cmd);
+		cmd = path(args);
+		execute_command(cmd, head, ev, i, ac, fd, fd1, arr);
+		i++;
+	}
 	return (0);
 }

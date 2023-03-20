@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:15:34 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/15 13:20:57 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/03/18 13:22:09 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <fcntl.h>
 
 int		last_index(char *s);
 char	*joined_arg(char *s);
