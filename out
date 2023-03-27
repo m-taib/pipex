@@ -1,8 +1,4 @@
-.
-..
-.git
-.test.c.swp
-@
+data
 Makefile
 a.out
 file1

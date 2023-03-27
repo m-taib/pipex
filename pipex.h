@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:15:34 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/18 13:22:09 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/03/27 12:22:49 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include <fcntl.h>
 
 int		last_index(char *s);
-char	*joined_arg(char *s);
+char	*joined_arg(char *s, int	*j);
 void	*ft_calloc(int count, int size);
 char	*ft_substr(char *s, int start, int len);
 char	*ft_strjoin(char *s1, char *s2);
@@ -42,6 +42,16 @@ typedef struct s_list
 	char	*content;
 	struct s_list *next;
 } t_list;
+typedef struct s_elements
+{
+	int		infd;
+	int		outfd;
+	int		ac;
+	char	*cmd_path;
+	char	**env;
+	int		prev[2];
+	int		next[2];
+}	t_elements;
 t_list	*get_commands(char	*str);
 t_list	*ft_lstnew(char *content);
 void	ft_lstadd_back(t_list **head, char *str);

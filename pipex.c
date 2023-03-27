@@ -6,84 +6,146 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:14:46 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/18 23:10:17 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/03/27 18:18:52 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	execute_command(char *cmd_path, t_list *args, char **env, int i, int ac, int fdd, int infd, int *fd)
+void	reset(int  i, t_elements *ptr)
+{
+	if (i > 2)
+	{
+		close(ptr->prev[0]);
+		close(ptr->prev[1]);
+	}
+	if (i >= 2 && i < ptr->ac - 1)
+	{	
+		ptr->prev[0] = ptr->next[0];
+		ptr->prev[1] = ptr->next[1];
+	}
+}
+
+char	**cmd_args(t_list *head)
+{
+	int		i;
+	t_list *tmp;
+	char	**str;
+
+	i = 0;
+	tmp = head;
+	while (tmp)
+	{
+		i++;
+		tmp = tmp->next;
+	}
+	str = malloc(sizeof(char *) * (i + 1));
+	if (!str)
+		return (0);
+	i = 0;
+	while (head)
+	{
+		str[i] = ft_strdup(head->content);
+		i++;
+		head = head->next;
+	}
+	str[i] = NULL;
+	return (str);
+}
+void	execute_command(t_list *args, int i, t_elements *ptr)
 {
 	char	*str;
 	t_list 	*tmp;
 	char	**cmds;
 	int		pid;
-	(void)ac;
 	tmp = args;
 	str = NULL;
 	pid = 1;
-	(void)fdd;	
-	while (args)
-	{
-		str = ft_strjoin(str ,args->content);
-		if (args->next)
-			str = ft_strjoin(str," ");
-		args = args->next;
-	}
-	cmds = ft_split2(str, ' ');
+	
+	cmds = cmd_args(args);
+	if (i < ptr->ac - 2)
+		pipe(ptr->next);
 	pid = fork();
 	if (pid == 0)
 	{
 		if (i == 2)
 		{
-			dup2(fd[1], 1);
-			close(fd[1]);
-			close(fd[0]);
-			dup2(infd , 0);
-			close(infd);
+			dup2(ptr->next[1], 1);
+			close(ptr->next[1]);
+			close(ptr->next[0]);
+			dup2(ptr->infd , 0);
+			close(ptr->infd);
 		}
 		else 
 		{
-			dup2(fd[0] , 0);
-			if (i == ac - 2)
+			dup2(ptr->prev[0] , 0);
+			close(ptr->prev[1]);
+			close(ptr->prev[0]);
+			if (i == ptr->ac - 2)
 			{
-				dup2(fdd , 1);
+				dup2(ptr->outfd , 1);
+				close(ptr->outfd);
 			}
 			else
-				dup2(fd[1] , 1);
-			close(fd[0]);
-			close(fd[1]);
+			{
+				dup2(ptr->next[1] , 1);
+				close(ptr->next[1]);
+				close(ptr->next[0]);
+			}
 		}
-		execve(cmd_path, cmds, env);
+		execve(ptr->cmd_path, cmds, ptr->env);
+		exit(127);
 	}
+	reset(i, ptr);
 }
 
 int		main(int ac, char **av, char **ev)
 {
 	char	**args;
 	int		i;
-	(void)ev;
 	t_list *head;
 	char	*cmd;
-	int		fd;
-	int		fd1;
-	int		arr[2];
-	fd1 = open("file1",O_RDWR);	
-	fd = open("file2",O_RDWR | O_TRUNC);
+	t_elements	*ptr;
+	ptr = malloc(sizeof(t_elements));
+	if (!ptr)
+		return (0);	
+	ptr->infd = open(av[2],O_RDWR);	
+	ptr->outfd = open(av[ac-1],O_RDWR | O_TRUNC | O_CREAT);
 	i = 2;
 	if (ac < 5)
 		return (1);
 	args = NULL;
-	pipe(arr);
-	while (i < ac - 1)
+	ptr->ac = ac;
+	/*while (i < ac - 1)
 	{
 		head = get_commands(av[i]);
 		cmd = ft_strjoin(ft_strdup("/"), head->content);
 		args = get_path(ev);
 		args = get_cmd_paths(args, cmd);
-		cmd = path(args);
-		execute_command(cmd, head, ev, i, ac, fd, fd1, arr);
+		ptr->cmd_path = path(args);
+		execute_command(head, i, ptr);
 		i++;
 	}
+	i = -1;
+	while (++i <= ac -1)
+		wait(NULL);*/
+	(void)cmd;
+	(void)ev;
+	//while (i < ac - 1)
+	//{
+		head = get_commands(av[4]);
+		while (head)
+		{
+			printf("%s\n",head->content);
+			head = head->next;
+		}
+	//	i++;
+	//}
+	/*exit(0);
+	cmd = ft_strjoin(ft_strdup("/"), head->content);
+	args = get_path(ev);
+	args = get_cmd_paths(args, cmd);
+	ptr->cmd_path = path(args);
+	execute_command(head, i, ptr);*/
 	return (0);
 }

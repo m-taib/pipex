@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:30:24 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/15 13:15:03 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/03/27 18:25:52 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,9 @@ int		last_index(char *s)
 	return (-1);
 }
 
-char	*joined_arg(char *s)
+char	*joined_arg(char *s,int		*j)
 {
 	int		i;
-	char	*arg;
 	char 	c;
 	char	*line;
 	char	*s2;
@@ -37,22 +36,51 @@ char	*joined_arg(char *s)
 	s2 = malloc(2);
 	s2[1] = '\0';
 	line = NULL;
-	i = last_index(s);
-	arg = ft_substr(s, 0, i+1);
 	i = 0;
-	while (arg[i])
+	while (s[i])
 	{
-		if (arg[i] == '\'' || arg[i] == '"')
-			c = arg[i++];
-		while (arg[i] && arg[i] != c)
+		if (s[i] == '\'' || s[i] == '"')
 		{
-			s2[0] = arg[i];
-			line = ft_strjoin(line, s2);
-			i++;
+			c = s[i++];
+			while (s[i] && s[i] != c)
+			{
+				s2[0] = s[i];
+				if (s[i] != c)
+					line = ft_strjoin(line, s2);
+				i++;
+			}
 		}
+		/*else
+		{
+			if (s[i])
+			{
+				s2[0] = s[i];
+				line = ft_strjoin(line,s2);
+			}
+		}*/
+		i++;
+
+	}
+	*j = i;
+	return (line);
+}
+
+char	*splited_str(char	*str, int 	*j)
+{
+	int		i;
+	char	*s;
+	i = 0;
+	while (str[i] && str[i] != ' ')
+		i++;
+	s = malloc(i + 1);
+	i = 0;
+	while (str[i] && str[i] != ' ')
+	{
+		s[i] = str[i];
 		i++;
 	}
-	return (line);
+	*j = *j + i;
+	return (s);
 }
 
 t_list	*get_commands(char	*str)
@@ -60,25 +88,25 @@ t_list	*get_commands(char	*str)
 	int		i;
 	int		start;
 	t_list	*cmds;
-	
+	int		j;
+
 	start = 0;
 	i = 0;
 	cmds = NULL;
 	while (str[i])
 	{
+		j = 0;
+		if (str[i] && (str[i] == '\'' || str[i] == '"'))
+		{
+			ft_lstadd_back(&cmds, joined_arg(&str[i], &j));	
+			i = i + j;
+		}
 		while (str[i] && str[i] == ' ')
 			i++;
-		if (str[i] == '\'' || str[i] == '"')
+		if (str[i] && str[i] != '\'' && str[i] != '"')
 		{
-			ft_lstadd_back(&cmds, joined_arg(&str[i]));	
-			i += last_index(&str[i]);
+			ft_lstadd_back(&cmds, splited_str(&str[i], &i));
 		}
-		if (str[i])
-			start = i;
-		while (str[i] && str[i] != ' ')
-			i++;
-		if (str[i-1] != ' ')
-			ft_lstadd_back(&cmds, ft_substr(str, start , i - start));	
 	}
 	return (cmds);
 }
