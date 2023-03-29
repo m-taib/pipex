@@ -6,13 +6,13 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 17:33:56 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/22 17:34:17 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/03/28 23:10:12 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	execute_command(t_list *args, int i, t_elements *ptr, int	*fd)
+void	execute_command(t_list *args, int i, t_elements *ptr)
 {
 	char	*str;
 	t_list 	*tmp;
@@ -35,23 +35,22 @@ void	execute_command(t_list *args, int i, t_elements *ptr, int	*fd)
 	{
 		if (i == 2)
 		{
-			dup2(fd[1], 1);
-			close(fd[1]);
-			close(fd[0]);
+			dup2(ptr->fd[1], 1);
+			close(ptr->fd[1]);
+			close(ptr->fd[0]);
 			dup2(ptr->infd , 0);
 			close(ptr->infd);
 		}
 		else
 		{
-			dup2(fd[0] , 0);
-			if (i == (ptr->ac - 2))
-				dup2(ptr->outfd , 1);
-			else
-				dup2(fd[1] , 1);
-			close(fd[0]);
-			close(fd[1]);
+			dup2(ptr->fd[0] , 0);
+			dup2(ptr->outfd , 1);
+			close(ptr->outfd);
+			close(ptr->fd[0]);
+			close(ptr->fd[1]);
 		}
 		execve(ptr->cmd_path, cmds, ptr->env);
+		exit(127);
 	}
 }
 
@@ -61,19 +60,18 @@ int		main(int ac, char **av, char **ev)
 	int		i;
 	t_list *head;
 	char	*cmd;
-	int		arr[2];
 	t_elements	*ptr;
 
 	ptr = malloc(sizeof(t_elements));
 	if (!ptr)
 		return (0);
-	ptr->infd = open("file1",O_RDWR);
-	ptr->outfd = open("file2",O_RDWR | O_TRUNC);
+	ptr->infd = open(av[1],O_RDWR);
+	ptr->outfd = open(av[ac-1],O_RDWR | O_TRUNC | O_CREAT);
 	i = 2;
 	if (ac < 5)
 		return (1);
 	args = NULL;
-	pipe(arr);
+	pipe(ptr->fd);
 	ptr->ac = ac;
 	while (i < ac - 1)
 	{
@@ -82,8 +80,11 @@ int		main(int ac, char **av, char **ev)
 		args = get_path(ev);
 		args = get_cmd_paths(args, cmd);
 		ptr->cmd_path = path(args);
-		execute_command(head, i, ptr, arr);
+		execute_command(head, i, ptr);
 		i++;
 	}
+	i = -1;
+	while (++i < 2)
+		wait(NULL);	
 	return (0);
 }

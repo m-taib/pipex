@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:23:52 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/14 17:40:13 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/03/27 22:13:25 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ char	*ft_strdup(char *s1)
 	return (ptr);
 }
 
-char	**ft_split3(char *s, char c)
+/*char	**ft_split3(char *s, char c)
 {
 	char	**str;
 	int		i[2];
@@ -138,7 +138,7 @@ char	**ft_split3(char *s, char c)
 	}
 	str[i[1]] = NULL;
 	return (str);
-}
+}*/
 
 char	**ft_split(char *s, char c)
 {

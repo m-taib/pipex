@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:30:24 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/27 18:25:52 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/03/28 16:17:43 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,21 +45,22 @@ char	*joined_arg(char *s,int		*j)
 			while (s[i] && s[i] != c)
 			{
 				s2[0] = s[i];
-				if (s[i] != c)
+				if (s[i] && s[i] != c)
 					line = ft_strjoin(line, s2);
 				i++;
 			}
 		}
-		/*else
+		else
 		{
 			if (s[i])
 			{
 				s2[0] = s[i];
 				line = ft_strjoin(line,s2);
 			}
-		}*/
+		}
 		i++;
-
+		if (s[i] == ' ')
+			break;
 	}
 	*j = i;
 	return (line);
@@ -69,6 +70,8 @@ char	*splited_str(char	*str, int 	*j)
 {
 	int		i;
 	char	*s;
+	int		sw;
+
 	i = 0;
 	while (str[i] && str[i] != ' ')
 		i++;
@@ -76,9 +79,20 @@ char	*splited_str(char	*str, int 	*j)
 	i = 0;
 	while (str[i] && str[i] != ' ')
 	{
-		s[i] = str[i];
+		sw = 0;
+		if (str[i] == '\'' || str[i] == '"')
+			if (str[i] == str[i+1])
+			{
+				sw = 1;
+				i += 2;
+			}
+		if (sw == 1)
+			s[i-2] = str[i];
+		else
+			s[i] = str[i];
 		i++;
 	}
+	s[i] = '\0';
 	*j = *j + i;
 	return (s);
 }
@@ -104,9 +118,7 @@ t_list	*get_commands(char	*str)
 		while (str[i] && str[i] == ' ')
 			i++;
 		if (str[i] && str[i] != '\'' && str[i] != '"')
-		{
 			ft_lstadd_back(&cmds, splited_str(&str[i], &i));
-		}
 	}
 	return (cmds);
 }
