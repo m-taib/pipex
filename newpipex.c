@@ -6,11 +6,25 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:14:46 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/29 23:23:32 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/03/30 22:42:28 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+void	ft_putstr(char *s, int fd)
+{
+	int	i;
+
+	i = 0;
+	if (!s)
+		return ;
+	while (s[i])
+	{
+		write(1, &s[i], fd);
+		i++;
+	}
+}
 
 void	reset(int  i, t_elements *ptr)
 {
@@ -54,15 +68,14 @@ char	**cmd_args(t_list *head)
 }
 void	execute_command(t_list *args, int i, t_elements *ptr)
 {
-	char	*str;
 	t_list 	*tmp;
 	char	**cmds;
 	int		pid;
+	int		j;
+
+	j = 0;
 	tmp = args;
-	str = NULL;
 	pid = 1;
-	printf("%s",ptr->str);
-	exit(0);	
 	cmds = cmd_args(args);
 	if (i < ptr->ac - 2)
 		pipe(ptr->next);
@@ -77,7 +90,7 @@ void	execute_command(t_list *args, int i, t_elements *ptr)
 			dup2(ptr->infd , 0);
 			close(ptr->infd);
 		}
-		else 
+		else
 		{
 			dup2(ptr->prev[0] , 0);
 			close(ptr->prev[1]);
@@ -94,12 +107,8 @@ void	execute_command(t_list *args, int i, t_elements *ptr)
 				close(ptr->next[0]);
 			}
 		}
-		//if (!ptr->cmd_path)
-			//ptr->cmd_path = "./script.sh";
 		if (execve(ptr->cmd_path, cmds, ptr->env) == -1)
-		{
 			perror("execve");
-		}
 		exit(127);
 	}
 	reset(i, ptr);
@@ -209,7 +218,6 @@ int		main(int ac, char **av, char **ev)
 	t_list *head;
 	char	*cmd;
 	t_elements	*ptr;
-	char	*str;
 	char	*s;
 	ptr = malloc(sizeof(t_elements));
 	if (!ptr)
@@ -222,27 +230,33 @@ int		main(int ac, char **av, char **ev)
 	args = NULL;
 	ptr->ac = ac;
 	s = NULL;
-	str = NULL;
+	ptr->str = NULL;
 	while (i < ac - 1)
 	{
-		head = get_commands(av[i]);
-		cmd = ft_strjoin(ft_strdup("/"), head->content);
-		if (!ft_strcmp(av[1],"here_doc"))
+		ptr->state = 0;
+		if (!ft_strcmp(av[1],"here_doc") && i == 2)
 		{
+			pipe(ptr->her);
+			ptr->state = 1;
 			s = get_line();
 			while (1)
 			{
 				if (!ft_strcmp(av[2],s))
 				{
-					ptr->str = str;
-					printf("%s\n",str);
-					exit(0);
+					if (!ptr->str)
+						ptr->str = ptr->str;
 					break;
 				}
-				str = ft_strjoin(str, s);
+				ptr->str = ft_strjoin(ptr->str, s);
+				ptr->str = ft_strjoin(ptr->str, " ");
 				s = get_line();
 			}
+			close(ptr->her[0]);
+			close(ptr->her[1]);
+			i++;
 		}
+		head = get_commands(av[i]);
+		cmd = ft_strjoin(ft_strdup("/"), head->content);
 		if (av[i][0] == '.' && av[i][1] == '/')
 			ptr->cmd_path = cmd_path(av[i]);
 		else if (av[i][0] == '/')
@@ -260,8 +274,16 @@ int		main(int ac, char **av, char **ev)
 		i++;
 	}
 	i = -1;
-	while (++i <= ac -1)
-		wait(NULL);
+	close(ptr->infd);
+	close(ptr->outfd);
+	close(ptr->next[0]);
+	close(ptr->next[1]);
+	close(ptr->prev[0]);
+	close(ptr->prev[1]);
+	close(ptr->her[0]);
+	close(ptr->her[1]);
+	//while (++i <= ac -1)
+	//	wait(NULL);
 	//(void)cmd;
 	//(void)ev;
 	//while (i < ac - 1)

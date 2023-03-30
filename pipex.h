@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:15:34 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/29 23:14:30 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/03/30 15:11:43 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,9 @@ typedef struct s_elements
 	int		next[2];
 	int		fd[2];
 	char	*str;
+	int		her[2];
+	int		state;
+	char	**her_doc;
 }	t_elements;
 t_list	*get_commands(char	*str);
 t_list	*ft_lstnew(char *content);
