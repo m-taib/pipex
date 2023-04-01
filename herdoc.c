@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   herdoc.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:14:46 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/30 22:38:42 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/04/01 19:50:54 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	ft_putstr(char *s, int fd)
 		return ;
 	while (s[i])
 	{
-		write(1, &s[i], fd);
+		write(fd, &s[i], 1);
 		i++;
 	}
 }
@@ -77,6 +77,28 @@ void	execute_command(t_list *args, int i, t_elements *ptr)
 	tmp = args;
 	pid = 1;
 	cmds = cmd_args(args);
+	if (ptr->state)
+		{
+			pid = fork();
+			if (pid == 0)
+			{
+				close(ptr->her[0]);
+				j = 0;
+				ptr->her_doc = ft_split(ptr->str, ' ');
+				while (ptr->her_doc[j])
+				{
+					ft_putstr(ptr->her_doc[j], ptr->her[1]);
+					ft_putstr("\n",ptr->her[1]);
+					j++;
+				}
+				close(ptr->her[1]);
+				exit(0);
+			}
+			else
+			{
+				close(ptr->her[1]);
+			}
+		}
 	if (i < ptr->ac - 2)
 		pipe(ptr->next);
 	pid = fork();
@@ -86,28 +108,16 @@ void	execute_command(t_list *args, int i, t_elements *ptr)
 		{
 			if (ptr->state)
 			{
-				j = 0;
-				ptr->her_doc = ft_split(ptr->str, ' ');
-				while (ptr->her_doc[j])
-				{	
-					ft_putstr(ptr->her_doc[j], ptr->her[1]);
-					ft_putstr("\n",ptr->her[1]);
-					j++;
-				}
-			}
-			if (ptr->state)
+				//ft_putstr("ffff",1);
+				//close(ptr->her[1]);	
 				dup2(ptr->her[0],0);
+			}
 			else
 			{
 				dup2(ptr->infd , 0);
 				close(ptr->infd);
 			}
 			dup2(ptr->next[1], 1);
-			char s[100];
-			int		n;
-			n = read(0,s,40);
-			s[n] = '\0';
-			ft_putstr(s, 2);
 			close(ptr->next[1]);
 			close(ptr->next[0]);
 			if (ptr->state)
@@ -274,8 +284,6 @@ int		main(int ac, char **av, char **ev)
 				ptr->str = ft_strjoin(ptr->str, " ");
 				s = get_line();
 			}
-			close(ptr->her[0]);
-			close(ptr->her[1]);
 			i++;
 		}
 		head = get_commands(av[i]);
@@ -305,8 +313,8 @@ int		main(int ac, char **av, char **ev)
 	close(ptr->prev[1]);
 	close(ptr->her[0]);
 	close(ptr->her[1]);
-	//while (++i <= ac -1)
-	//	wait(NULL);
+	while (++i <= ac -1)
+		wait(NULL);
 	//(void)cmd;
 	//(void)ev;
 	//while (i < ac - 1)
