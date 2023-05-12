@@ -10,8 +10,8 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRC = mand.c pipex_utils.c ft_split.c ft_split2.c ft_strlcpy.c pipex_utils2.c
-BSRC = herdoc.c pipex_utils.c ft_split.c ft_split2.c ft_strlcpy.c pipex_utils2.c
+SRC = mand.c pipex_utils.c ft_split.c ft_split2.c ft_strlcpy.c pipex_utils2.c pipex_utils3.c exec_cmds.c
+BSRC = optimize.c pipex_utils.c ft_split.c ft_split2.c ft_strlcpy.c pipex_utils2.c pipex_utils3.c exec_cmds.c
 OSRC = $(SRC:.c=.o)
 OBSRC = $(BSRC:.c=.o)
 

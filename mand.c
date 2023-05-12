@@ -12,13 +12,11 @@
 
 #include "pipex.h"
 
-void	execute_command(t_list *args, int i, t_elements *ptr)
+void	execute_command1(t_list *args, int i, t_elements *ptr)
 {
 	char	*str;
-	t_list 	*tmp;
 	char	**cmds;
 	int		pid;
-	tmp = args;
 	str = NULL;
 	pid = 1;
 
@@ -76,6 +74,12 @@ int		main(int ac, char **av, char **ev)
 	while (i < ac - 1)
 	{
 		head = get_commands(av[i]);
+		while (head)
+		{
+			printf("%s\n",head->content);
+			head = head->next;
+		}
+		exit(0);
 		cmd = ft_strjoin(ft_strdup("/"), head->content);
 		args = get_path(ev);
 		args = get_cmd_paths(args, cmd);

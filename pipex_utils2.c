@@ -12,20 +12,6 @@
 
 #include "pipex.h"
 
-int		last_index(char *s)
-{
-	int		i;
-
-	i = ft_strlen(s) - 1;
-	while (i >= 0)
-	{
-		if (s[i] == '\'' || s[i] == '"')
-			return (i);
-		i--;
-	}
-	return (-1);
-}
-
 char	*joined_arg(char *s,int		*j)
 {
 	int		i;
@@ -81,11 +67,13 @@ char	*splited_str(char	*str, int 	*j)
 	{
 		sw = 0;
 		if (str[i] == '\'' || str[i] == '"')
+		{
 			if (str[i] == str[i+1])
 			{
 				sw = 1;
 				i += 2;
 			}
+		}
 		if (sw == 1)
 			s[i-2] = str[i];
 		else
@@ -100,11 +88,9 @@ char	*splited_str(char	*str, int 	*j)
 t_list	*get_commands(char	*str)
 {
 	int		i;
-	int		start;
 	t_list	*cmds;
 	int		j;
 
-	start = 0;
 	i = 0;
 	cmds = NULL;
 	while (str[i])
@@ -150,25 +136,4 @@ void	ft_lstadd_back(t_list **head, char *str)
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = newnode;
-}
-
-char	*ft_substr(char *s, int start, int len)
-{
-	char	*str;
-	int				j;
-	int				i;
-
-	str = malloc(len + 1);
-	if (!str)
-		return (NULL);
-	i = start;
-	j = 0;
-	while (s[i] && j < len)
-	{
-		str[j] = s[i];
-		i++;
-		j++;
-	}
-	str[j] = '\0';
-	return (str);
 }

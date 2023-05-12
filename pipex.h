@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
+#include <wait.h>
 
 int		last_index(char *s);
 char	*joined_arg(char *s, int	*j);
@@ -56,7 +57,15 @@ typedef struct s_elements
 	int		her[2];
 	int		state;
 	char	**her_doc;
+	t_list	*head;
 }	t_elements;
+int	ft_strcmp(char *s1, char *s2);
+int	check_newline(char *str);
+char	*get_str(int i, char *line);
+char	*get_line(void);
+char	*cmd_path(char	*str);
+void    execute_command(t_list *args, int i, t_elements *ptr);
+void    execute_command1(t_list *args, int i, t_elements *ptr);
 t_list	*get_commands(char	*str);
 t_list	*ft_lstnew(char *content);
 void	ft_lstadd_back(t_list **head, char *str);
