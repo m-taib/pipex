@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:15:34 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/30 15:11:43 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/05/13 15:49:15 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
-#include <wait.h>
-
+#include <sys/wait.h>
 int		last_index(char *s);
 char	*joined_arg(char *s, int	*j);
 void	*ft_calloc(int count, int size);
@@ -29,7 +28,7 @@ int		ft_strncmp(char *s1, char *s2, int len);
 char	**ft_split2(char *s, char c);
 int		count(char *s, char c);
 char	**ft_split(char *s, char c);
-void	free_array(char **str);
+void	free_array(char **str, int i);
 int		ft_strlen(char *s);
 int		word_len(char *s, char c);
 int		ft_strlcpy(char *dst, char *src, int dstsize);
@@ -43,6 +42,7 @@ typedef struct s_list
 	char	*content;
 	struct s_list *next;
 } t_list;
+
 typedef struct s_elements
 {
 	int		infd;
@@ -57,8 +57,15 @@ typedef struct s_elements
 	int		her[2];
 	int		state;
 	char	**her_doc;
+	int		pid[2];
 	t_list	*head;
 }	t_elements;
+
+void	free_list(t_list *head);
+char	*check_path(char	 **env, char *cmd);
+char	*get_and_check_path(t_list *head, char	**env);
+int		open_file(char *file_name, char *file_type);
+void	ft_exec(t_elements *ptr, char **av, char **env);
 int	ft_strcmp(char *s1, char *s2);
 int	check_newline(char *str);
 char	*get_str(int i, char *line);

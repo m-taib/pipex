@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 17:33:56 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/28 23:10:12 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/05/13 18:08:46 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,43 +52,22 @@ void	execute_command1(t_list *args, int i, t_elements *ptr)
 	}
 }
 
-int		main(int ac, char **av, char **ev)
+int		main(int ac, char **av, char **env)
 {
-	char	**args;
 	int		i;
-	t_list *head;
-	char	*cmd;
-	t_elements	*ptr;
+	t_elements	ptr;
 
-	ptr = malloc(sizeof(t_elements));
-	if (!ptr)
-		return (0);
-	ptr->infd = open(av[1],O_RDWR);
-	ptr->outfd = open(av[ac-1],O_RDWR | O_TRUNC | O_CREAT);
-	i = 2;
-	if (ac < 5)
+	i = 0;
+	if (ac != 5)
+	{	
+		write(2,"Invalid Number of arguments\n",29);
 		return (1);
-	args = NULL;
-	pipe(ptr->fd);
-	ptr->ac = ac;
-	while (i < ac - 1)
-	{
-		head = get_commands(av[i]);
-		while (head)
-		{
-			printf("%s\n",head->content);
-			head = head->next;
-		}
-		exit(0);
-		cmd = ft_strjoin(ft_strdup("/"), head->content);
-		args = get_path(ev);
-		args = get_cmd_paths(args, cmd);
-		ptr->cmd_path = path(args);
-		execute_command(head, i, ptr);
-		i++;
 	}
-	i = -1;
-	while (++i < 2)
-		wait(NULL);	
-	return (0);
+	ptr.infd = open_file(av[1], "in");
+	ptr.outfd = open_file(av[ac-1],"out");
+	ptr.ac = ac;
+	ft_exec(&ptr, av, env);
+	//waitpid(ptr.pid[0], &i, 0);	
+	//waitpid(ptr.pid[1], &i, 0);	
+	return (i);
 }

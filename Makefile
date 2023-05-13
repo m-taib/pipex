@@ -6,12 +6,12 @@
 #    By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/25 08:50:48 by mtaib             #+#    #+#              #
-#    Updated: 2023/04/01 15:59:52 by mtaib            ###   ########.fr        #
+#    Updated: 2023/05/13 07:51:52 by mtaib            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRC = mand.c pipex_utils.c ft_split.c ft_split2.c ft_strlcpy.c pipex_utils2.c pipex_utils3.c exec_cmds.c
-BSRC = optimize.c pipex_utils.c ft_split.c ft_split2.c ft_strlcpy.c pipex_utils2.c pipex_utils3.c exec_cmds.c
+SRC = mand.c pipex_utils.c ft_split.c ft_split2.c ft_strlcpy.c pipex_utils2.c pipex_utils3.c exec_cmds.c pipex_utils4.c
+BSRC = optimize.c pipex_utils.c ft_split.c ft_split2.c ft_strlcpy.c pipex_utils2.c pipex_utils3.c exec_cmds.c pipex_utils4.c
 OSRC = $(SRC:.c=.o)
 OBSRC = $(BSRC:.c=.o)
 

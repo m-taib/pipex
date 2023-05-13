@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:22:30 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/16 10:37:25 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/05/13 16:19:09 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,7 @@ char	**get_path(char **ev)
 	char	**path;
 	char	*str;
 
-	str = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin: \
-			/usr/local/munki: \
-			/Library/Frameworks/Mono.framework/Versions/Current/Commands";
+	str = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki";
 	i = 0;
 	while (ev[i])
 	{
@@ -125,6 +123,7 @@ char	*path(char **args)
 	}
 	return (0);
 }
+
 int	ft_strlen(char *s)
 {
 	int	i;
@@ -135,11 +134,8 @@ int	ft_strlen(char *s)
 	return (i);
 }
 
-void	free_array(char **str)
+void	free_array(char **str, int i)
 {
-	int	i;
-
-	i = 0;
 	if (!str)
 		return ;
 	while (str[i])
@@ -147,6 +143,5 @@ void	free_array(char **str)
 		free(str[i]);
 		i++;
 	}
-	free(str[i]);
 	free(str);
 }

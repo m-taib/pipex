@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   herdoc.c                                           :+:      :+:    :+:   */
+/*   exec_cmds.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:14:46 by mtaib             #+#    #+#             */
-/*   Updated: 2023/04/01 19:50:54 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/05/13 18:35:45 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ char	**cmd_args(t_list *head)
 	i = 0;
 	while (head)
 	{
-		str[i] = ft_strdup(head->content);
+		str[i] = head->content;
 		i++;
 		head = head->next;
 	}
@@ -95,7 +95,6 @@ void	read_and_write(t_elements *ptr)
 {
 	if (ptr->state)
 		dup2(ptr->her[0],0);
-		
 	else
 	{
 		dup2(ptr->infd , 0);
@@ -128,27 +127,67 @@ void	read_and_write2(t_elements *ptr, int i)
 
 }
 
+void	exit_error()
+{
+	char	*str;
+
+	str = "command not found\n";
+	write(1, str, ft_strlen(str));
+	exit(127);
+}
 void	execute_command(t_list *args, int i, t_elements *ptr)
 {
 	char	**cmds;
 	int		pid;
 
 	pid = 1;
-	cmds = cmd_args(args);
-	if (ptr->state)
-		exec_heredoc(ptr, pid);
+	//if (ptr->state)
+	//	exec_heredoc(ptr, pid);
 	if (i < ptr->ac - 2)
 		pipe(ptr->next);
 	pid = fork();
 	if (pid == 0)
 	{
-		if (i == 2 || ptr->state)
+		cmds = cmd_args(args);
+		if (!ptr->cmd_path)
+			exit_error();
+		if (i == 2)
+		{
+			if (ptr->infd < 0)
+				exit(1);
 			read_and_write(ptr);
+		}
 		else
+		{
+			if (ptr->outfd < 0)
+				exit(1);
 			read_and_write2(ptr, i);
-		if (execve(ptr->cmd_path, cmds, ptr->env) == -1)
+		}
+		if (execve(ptr->cmd_path, cmds, ptr->env))
+		{
+			free(cmds);
 			perror("execve");
-		exit(127);
+		}
 	}
+	ptr->pid[i-2] = pid;
 	reset(i, ptr);
+}
+
+void	ft_exec(t_elements *ptr, char **av, char **env)
+{
+	int		i;
+	t_list	*head;
+
+	ptr->env = env;
+	i = 2;
+	while (i < ptr->ac - 1)
+	{
+		head = get_commands(av[i]);
+		ptr->cmd_path = get_and_check_path(head, env);
+		execute_command(head, i, ptr);
+		free_list(head);
+		free(ptr->cmd_path);
+		i++;
+	}
+
 }

@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:30:24 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/28 16:17:43 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/05/13 11:57:13 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,12 @@ t_list	*get_commands(char	*str)
 	int		j;
 
 	i = 0;
-	cmds = NULL;
+	cmds = NULL;	
+	while (str && str[i] && str[i] == ' ')
+		i++;
+	if (!str[i])
+		return (NULL);
+	i = 0;
 	while (str[i])
 	{
 		j = 0;
