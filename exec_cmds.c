@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:14:46 by mtaib             #+#    #+#             */
-/*   Updated: 2023/05/13 18:35:45 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/05/14 14:43:57 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,12 +127,15 @@ void	read_and_write2(t_elements *ptr, int i)
 
 }
 
-void	exit_error()
+void	exit_error(char *cmd)
 {
 	char	*str;
 
-	str = "command not found\n";
-	write(1, str, ft_strlen(str));
+	str = "pipex: command not found: ";
+	write(2, str, ft_strlen(str));
+	if (cmd)
+		write(2, &cmd[1], ft_strlen(cmd));
+	write(2, "\n", 1);
 	exit(127);
 }
 void	execute_command(t_list *args, int i, t_elements *ptr)
@@ -140,17 +143,15 @@ void	execute_command(t_list *args, int i, t_elements *ptr)
 	char	**cmds;
 	int		pid;
 
-	pid = 1;
-	//if (ptr->state)
-	//	exec_heredoc(ptr, pid);
 	if (i < ptr->ac - 2)
 		pipe(ptr->next);
 	pid = fork();
 	if (pid == 0)
 	{
 		cmds = cmd_args(args);
-		if (!ptr->cmd_path)
-			exit_error();
+		if (!ptr->cmd_path ||
+				(ptr->cmd_path && !ft_strcmp(&ptr->cmd_path[1] , args->content)))
+			exit_error(ptr->cmd_path);
 		if (i == 2)
 		{
 			if (ptr->infd < 0)
@@ -165,7 +166,7 @@ void	execute_command(t_list *args, int i, t_elements *ptr)
 		}
 		if (execve(ptr->cmd_path, cmds, ptr->env))
 		{
-			free(cmds);
+			free_array(cmds, 0);
 			perror("execve");
 		}
 	}
@@ -185,8 +186,8 @@ void	ft_exec(t_elements *ptr, char **av, char **env)
 		head = get_commands(av[i]);
 		ptr->cmd_path = get_and_check_path(head, env);
 		execute_command(head, i, ptr);
-		free_list(head);
 		free(ptr->cmd_path);
+		free_list(head);
 		i++;
 	}
 

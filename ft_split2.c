@@ -6,16 +6,44 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/02 18:29:17 by mtaib             #+#    #+#             */
-/*   Updated: 2023/03/06 08:29:26 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/05/14 10:45:15 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "pipex.h"
+
+char	*ft_strdup(char *s1)
+{
+	char	*ptr;
+	int		i;
+
+	i = 0;
+	ptr = malloc(ft_strlen(s1) + 1);
+	if (!ptr)
+		return (NULL);
+	while (s1[i])
+	{
+		ptr[i] = s1[i];
+		i++;
+	}
+	ptr[i] = '\0';
+	return (ptr);
+}
 
 static int	check(char c, char ch)
 {
 	if (c == ch)
 		return (0);
 	return (1);
+}
+
+int		word_len(char *s, char c)
+{
+	int	i;
+
+	i = 0;
+	while (s[i] && check(s[i], c))
+		i++;
+	return (i);
 }
 
 int	count2(char *s, char c)

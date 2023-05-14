@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:30:24 by mtaib             #+#    #+#             */
-/*   Updated: 2023/05/13 11:57:13 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/05/14 10:33:44 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ char	*joined_arg(char *s,int		*j)
 			break;
 	}
 	*j = i;
-	return (line);
+	return (free(s2), line);
 }
 
 char	*splited_str(char	*str, int 	*j)

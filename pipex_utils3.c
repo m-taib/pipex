@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:14:46 by mtaib             #+#    #+#             */
-/*   Updated: 2023/04/01 19:50:54 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/05/14 10:48:46 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ char	*get_line(void)
 	return (line);
 }
 
-char	*cmd_path(char	*str)
+/*char	*cmd_path(char	*str)
 {
 	int		i;
 	char	*s;
@@ -107,5 +107,5 @@ char	*cmd_path(char	*str)
 		i++;
 	}
 	return (s);
-}
+}*/
 

@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/13 07:34:03 by mtaib             #+#    #+#             */
-/*   Updated: 2023/05/13 15:42:06 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/05/14 14:00:57 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,7 @@ char	*check_path(char	**env, char *cmd)
 	}
 	free(env[i]);
 	free(env);
-	free(cmd);
-	return (NULL);
+	return (cmd);
 }
 
 char	*get_and_check_path(t_list *head, char	**env)
@@ -75,6 +74,11 @@ char	*get_and_check_path(t_list *head, char	**env)
 	
 	if (!head)
 		return (NULL);	
+	if (!access(head->content, F_OK | X_OK))
+	{
+		cmd = ft_strdup(head->content);
+		return (cmd);
+	}
 	cmd = ft_strjoin(ft_strdup("/"), head->content);
 	str = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki";
 	i = 0;

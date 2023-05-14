@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:22:30 by mtaib             #+#    #+#             */
-/*   Updated: 2023/05/13 16:19:09 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/05/14 10:47:42 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	ft_strncmp(char *s1, char *s2, int len)
 	return (s1[i] - s2[i]);
 }
 
-char	**get_path(char **ev)
+/*char	**get_path(char **ev)
 {
 	int		i;
 	char	**path;
@@ -70,7 +70,7 @@ char	**get_path(char **ev)
 	}
 	path = ft_split2(str, ':');
 	return (path);
-}
+}*/
 
 char	*ft_strchr(char *str, char c)
 {
@@ -87,7 +87,7 @@ char	*ft_strchr(char *str, char c)
 
 }
 
-char 	**get_cmd_paths(char **args, char *cmd)
+/*char 	**get_cmd_paths(char **args, char *cmd)
 {
 	int	i;
 	char	**paths;
@@ -122,7 +122,7 @@ char	*path(char **args)
 		i++;
 	}
 	return (0);
-}
+}*/
 
 int	ft_strlen(char *s)
 {
