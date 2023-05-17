@@ -36,7 +36,7 @@ static int	check(char c, char ch)
 	return (1);
 }
 
-int		word_len(char *s, char c)
+int	word_len(char *s, char c)
 {
 	int	i;
 

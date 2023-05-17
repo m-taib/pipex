@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:14:46 by mtaib             #+#    #+#             */
-/*   Updated: 2023/05/14 10:48:46 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/05/17 15:30:54 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_strcmp(char *s1, char *s2)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	while (s1[i] && s2[i] && s1[i] == s2[i])
@@ -89,23 +89,29 @@ char	*get_line(void)
 	return (line);
 }
 
-/*char	*cmd_path(char	*str)
+char	**cmd_args(t_list *head)
 {
 	int		i;
-	char	*s;
+	t_list	*tmp;
+	char	**str;
 
 	i = 0;
-	while (str[i] && str[i] != ' ')
-		i++;
-	s = malloc(i+1);
-   	if (!s)
-		return (0);
-	i = 0;
-	while (str[i] && str[i] != ' ')
+	tmp = head;
+	while (tmp)
 	{
-		s[i] = str[i];
+		tmp = tmp->next;
 		i++;
 	}
-	return (s);
-}*/
-
+	str = malloc(sizeof(char *) * (i + 1));
+	if (!str)
+		return (0);
+	i = 0;
+	while (head)
+	{
+		str[i] = head->content;
+		i++;
+		head = head->next;
+	}
+	str[i] = NULL;
+	return (str);
+}

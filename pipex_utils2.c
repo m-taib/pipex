@@ -6,93 +6,59 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:30:24 by mtaib             #+#    #+#             */
-/*   Updated: 2023/05/14 10:33:44 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/05/17 17:47:20 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*joined_arg(char *s,int		*j)
+void	read_and_write(t_elements *ptr)
 {
-	int		i;
-	char 	c;
-	char	*line;
-	char	*s2;
-
-	s2 = malloc(2);
-	s2[1] = '\0';
-	line = NULL;
-	i = 0;
-	while (s[i])
+	if (ptr->state)
+		dup2(ptr->her[0], 0);
+	else
 	{
-		if (s[i] == '\'' || s[i] == '"')
+		if (ptr->infd > 0)
 		{
-			c = s[i++];
-			while (s[i] && s[i] != c)
-			{
-				s2[0] = s[i];
-				if (s[i] && s[i] != c)
-					line = ft_strjoin(line, s2);
-				i++;
-			}
+			dup2(ptr->infd, 0);
+			close(ptr->infd);
 		}
-		else
-		{
-			if (s[i])
-			{
-				s2[0] = s[i];
-				line = ft_strjoin(line,s2);
-			}
-		}
-		i++;
-		if (s[i] == ' ')
-			break;
 	}
-	*j = i;
-	return (free(s2), line);
+	dup2(ptr->next[1], 1);
+	close(ptr->next[1]);
+	close(ptr->next[0]);
+	if (ptr->state)
+		close(ptr->her[0]);
 }
 
-char	*splited_str(char	*str, int 	*j)
+void	read_and_write2(t_elements *ptr, int i)
 {
-	int		i;
-	char	*s;
-	int		sw;
-
-	i = 0;
-	while (str[i] && str[i] != ' ')
-		i++;
-	s = malloc(i + 1);
-	i = 0;
-	while (str[i] && str[i] != ' ')
+	dup2(ptr->prev[0], 0);
+	close(ptr->prev[1]);
+	close(ptr->prev[0]);
+	if (i == ptr->ac - 2)
 	{
-		sw = 0;
-		if (str[i] == '\'' || str[i] == '"')
-		{
-			if (str[i] == str[i+1])
-			{
-				sw = 1;
-				i += 2;
-			}
-		}
-		if (sw == 1)
-			s[i-2] = str[i];
-		else
-			s[i] = str[i];
-		i++;
+		if (ptr->outfd == -1)
+			exit(1);
+		dup2(ptr->outfd, 1);
+		close(ptr->outfd);
 	}
-	s[i] = '\0';
-	*j = *j + i;
-	return (s);
+	else
+	{
+		dup2(ptr->next[1], 1);
+		close(ptr->next[1]);
+		close(ptr->next[0]);
+	}
 }
 
-t_list	*get_commands(char	*str)
+t_list	*get_commands(char *str)
 {
 	int		i;
 	t_list	*cmds;
 	int		j;
 
 	i = 0;
-	cmds = NULL;	
+	cmds = NULL;
 	while (str && str[i] && str[i] == ' ')
 		i++;
 	if (!str[i])
@@ -103,7 +69,7 @@ t_list	*get_commands(char	*str)
 		j = 0;
 		if (str[i] && (str[i] == '\'' || str[i] == '"'))
 		{
-			ft_lstadd_back(&cmds, joined_arg(&str[i], &j));	
+			ft_lstadd_back(&cmds, joined_arg(&str[i], &j));
 			i = i + j;
 		}
 		while (str[i] && str[i] == ' ')
