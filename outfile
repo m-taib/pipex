@@ -1,7 +1,10 @@
 Makefile
+bonus.c
+bonus.o
+c_formatter_42
 exec_cmds.c
 exec_cmds.o
-ft_split.c
+file1
 ft_split2.c
 ft_split2.o
 ft_strlcpy.c
@@ -9,10 +12,10 @@ ft_strlcpy.o
 infile
 mand.c
 mand.o
-optimize.c
 outfile
 pipex
 pipex.h
+pipex_bonus
 pipex_utils.c
 pipex_utils.o
 pipex_utils2.c
@@ -21,4 +24,7 @@ pipex_utils3.c
 pipex_utils3.o
 pipex_utils4.c
 pipex_utils4.o
+pipex_utils5.c
+pipex_utils5.o
 script.sh
+sleep 2outfile

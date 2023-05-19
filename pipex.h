@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:15:34 by mtaib             #+#    #+#             */
-/*   Updated: 2023/05/17 18:16:20 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/05/19 08:45:12 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ typedef struct s_elements
 	t_list			*head;
 }					t_elements;
 
+void				execute_child(t_list *args, int i, t_elements *ptr);
+void				ft_exit(char *str, t_elements *ptr);
 void				open_files(char **av, t_elements *ptr, int ac);
 void				read_and_write(t_elements *ptr);
 void				read_and_write2(t_elements *ptr, int i);

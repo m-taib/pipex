@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:30:24 by mtaib             #+#    #+#             */
-/*   Updated: 2023/05/17 17:47:20 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/05/19 08:44:14 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,21 @@
 void	read_and_write(t_elements *ptr)
 {
 	if (ptr->state)
-		dup2(ptr->her[0], 0);
+	{
+		if (dup2(ptr->her[0], 0) == -1)
+			ft_exit("failed to duplicate the file descriptor", ptr);
+	}
 	else
 	{
 		if (ptr->infd > 0)
 		{
-			dup2(ptr->infd, 0);
+			if (dup2(ptr->infd, 0) == -1)
+				ft_exit("failed to duplicate the file descriptor", ptr);
 			close(ptr->infd);
 		}
 	}
-	dup2(ptr->next[1], 1);
+	if (dup2(ptr->next[1], 1) == -1)
+			ft_exit("failed to duplicate the file descriptor", ptr);
 	close(ptr->next[1]);
 	close(ptr->next[0]);
 	if (ptr->state)
@@ -33,19 +38,22 @@ void	read_and_write(t_elements *ptr)
 
 void	read_and_write2(t_elements *ptr, int i)
 {
-	dup2(ptr->prev[0], 0);
+	if (dup2(ptr->prev[0], 0) == -1)
+			ft_exit("failed to duplicate the file descriptor", ptr);
 	close(ptr->prev[1]);
 	close(ptr->prev[0]);
 	if (i == ptr->ac - 2)
 	{
 		if (ptr->outfd == -1)
 			exit(1);
-		dup2(ptr->outfd, 1);
+		if (dup2(ptr->outfd, 1) == -1)
+			ft_exit("failed to duplicate the file descriptor", ptr);
 		close(ptr->outfd);
 	}
 	else
 	{
-		dup2(ptr->next[1], 1);
+		if (dup2(ptr->next[1], 1) == -1)
+			ft_exit("failed to duplicate the file descriptor", ptr);
 		close(ptr->next[1]);
 		close(ptr->next[0]);
 	}

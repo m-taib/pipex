@@ -6,7 +6,7 @@
 /*   By: mtaib <mtaib@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/05 20:14:46 by mtaib             #+#    #+#             */
-/*   Updated: 2023/05/17 17:49:41 by mtaib            ###   ########.fr       */
+/*   Updated: 2023/05/19 08:43:27 by mtaib            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,32 @@ void	ft_state(t_elements *ptr, int i)
 		read_and_write2(ptr, i);
 }
 
+void	execute_child(t_list *args, int i, t_elements *ptr)
+{
+	ptr->cmds = cmd_args(args);
+	if (!ptr->cmd_path || (ptr->cmd_path && !ft_strcmp(&ptr->cmd_path[1],
+			args->content)))
+		exit_error(ptr->cmd_path, ptr);
+	if (ptr->infd < 0 && i == 2 && !ptr->state)
+		exit(1);
+	ft_state(ptr, i);
+	if (execve(ptr->cmd_path, ptr->cmds, ptr->env))
+	{
+		free_array(ptr->cmds, 0);
+		perror("execve");
+	}
+}
+
+void	ft_exit(char *str, t_elements *ptr)
+{
+	free(ptr->pid);
+	free_list(ptr->head);
+	free(ptr->cmd_path);
+	free(ptr);
+	write(2, str, ft_strlen(str));
+	exit(1);
+}
+
 void	execute_command(t_list *args, int i, t_elements *ptr)
 {
 	int	pid;
@@ -70,23 +96,13 @@ void	execute_command(t_list *args, int i, t_elements *ptr)
 	if (ptr->state)
 		exec_heredoc(ptr, 0);
 	if (i < ptr->ac - 2)
-		pipe(ptr->next);
+		if (pipe(ptr->next) == -1)
+			ft_exit("ifailed to create the pipe", ptr);
 	pid = fork();
+	if (pid == -1)
+		ft_exit("failed to create child process", ptr);
 	if (pid == 0)
-	{
-		ptr->cmds = cmd_args(args);
-		if (!ptr->cmd_path || (ptr->cmd_path && !ft_strcmp(&ptr->cmd_path[1],
-					args->content)))
-			exit_error(ptr->cmd_path, ptr);
-		if (ptr->infd < 0 && i == 2 && !ptr->state)
-			exit(1);
-		ft_state(ptr, i);
-		if (execve(ptr->cmd_path, ptr->cmds, ptr->env))
-		{
-			free_array(ptr->cmds, 0);
-			perror("execve");
-		}
-	}
+		execute_child(args, i, ptr);
 	ptr->pid[i - 2] = pid;
 	reset(i, ptr);
 }
@@ -94,16 +110,15 @@ void	execute_command(t_list *args, int i, t_elements *ptr)
 void	ft_exec(t_elements *ptr, char **av, char **env)
 {
 	int		i;
-	t_list	*head;
 
 	ptr->state = 0;
 	ptr->env = env;
 	i = 2;
 	while (i < ptr->ac - 1)
 	{
-		head = get_commands(av[i]);
-		ptr->cmd_path = get_and_check_path(head, env);
-		execute_command(head, i, ptr);
+		ptr->head = get_commands(av[i]);
+		ptr->cmd_path = get_and_check_path(ptr->head, env);
+		execute_command(ptr->head, i, ptr);
 		free(ptr->cmd_path);
 		i++;
 	}
